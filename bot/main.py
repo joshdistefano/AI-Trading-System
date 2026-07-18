@@ -8,12 +8,31 @@ from strategies.momentum import Strategy
 from core.backtester import Backtester
 from core.performance import Performance
 from core.data_loader import DataLoader
+from risk.risk_manager import RiskManager
 
 
 print("AI Trading System Started")
 print("Market:", config.MARKET)
 print("Timeframe:", config.TIMEFRAME)
 print("Risk:", config.RISK_PER_TRADE * 100, "%")
+
+
+risk_manager = RiskManager(
+    config.ACCOUNT_SIZE,
+    config.RISK_PER_TRADE
+)
+
+
+risk_amount = risk_manager.calculate_risk_amount()
+
+contracts = risk_manager.calculate_position_size(
+    stop_loss_points=50,
+    point_value=config.POINT_VALUE
+)
+
+
+print("Risk Amount Per Trade: $", risk_amount)
+print("Position Size:", contracts, "contracts")
 
 
 strategy = Strategy()
