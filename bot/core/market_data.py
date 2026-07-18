@@ -1,8 +1,7 @@
 class MarketData:
-    def __init__(self, price, volume):
-        self.price = price
+    def __init__(self, open_price, high, low, close, volume):
+        self.open = open_price
+        self.high = high
+        self.low = low
+        self.close = close
         self.volume = volume
-
-    def show(self):
-        print("Current Price:", self.price)
-        print("Volume:", self.volume)

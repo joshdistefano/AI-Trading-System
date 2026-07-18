@@ -14,13 +14,13 @@ class Backtester:
             profit = 0
 
             if decision == "BUY":
-                profit = future.price - current.price
+                profit = future.close - current.close
 
             elif decision == "SELL":
-                profit = current.price - future.price
+                profit = current.close - future.close
 
             self.results.append({
-                "price": current.price,
+                "close": current.close,
                 "decision": decision,
                 "profit": profit
             })

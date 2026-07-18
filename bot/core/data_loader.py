@@ -12,8 +12,12 @@ class DataLoader:
             reader = csv.DictReader(file)
 
             for row in reader:
+
                 candle = MarketData(
-                    float(row["price"]),
+                    float(row["open"]),
+                    float(row["high"]),
+                    float(row["low"]),
+                    float(row["close"]),
                     float(row["volume"])
                 )
 

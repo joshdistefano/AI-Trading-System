@@ -1,23 +1,25 @@
 class Strategy:
     def __init__(self):
         self.name = "Momentum Strategy"
-        self.previous_price = None
+        self.previous_close = None
 
     def analyze(self, market_data):
 
-        if self.previous_price is None:
-            self.previous_price = market_data.price
+        current_close = market_data.close
+
+        if self.previous_close is None:
+            self.previous_close = current_close
             return "NO TRADE"
 
-        if market_data.price > self.previous_price:
+        if current_close > self.previous_close:
             decision = "BUY"
 
-        elif market_data.price < self.previous_price:
+        elif current_close < self.previous_close:
             decision = "SELL"
 
         else:
             decision = "NO TRADE"
 
-        self.previous_price = market_data.price
+        self.previous_close = current_close
 
         return decision
