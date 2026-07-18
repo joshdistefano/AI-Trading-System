@@ -9,6 +9,7 @@ from core.backtester import Backtester
 from core.performance import Performance
 from core.data_loader import DataLoader
 from risk.risk_manager import RiskManager
+from trading.trade_manager import TradeManager
 
 
 print("AI Trading System Started")
@@ -21,6 +22,9 @@ risk_manager = RiskManager(
     config.ACCOUNT_SIZE,
     config.RISK_PER_TRADE
 )
+
+
+trade_manager = TradeManager()
 
 
 risk_amount = risk_manager.calculate_risk_amount()
@@ -55,3 +59,28 @@ backtester.show_results()
 performance = Performance(backtester.results)
 
 performance.analyze()
+
+
+print("\nTrade Simulation:")
+
+
+trade = trade_manager.open_trade(
+    "BUY",
+    22000,
+    21950,
+    22100,
+    contracts
+)
+
+
+profit = trade.close_trade(
+    22050,
+    config.POINT_VALUE
+)
+
+
+print({
+    "entry": trade.entry_price,
+    "exit": trade.exit_price,
+    "profit": profit
+})
