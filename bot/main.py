@@ -5,11 +5,11 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core import config
 from strategies.momentum import Strategy
-from core.backtester import Backtester
-from core.performance import Performance
 from core.data_loader import DataLoader
 from risk.risk_manager import RiskManager
 from trading.trade_manager import TradeManager
+from trading.trade_simulator import TradeSimulator
+from trading.trade_performance import TradePerformance
 
 
 print("AI Trading System Started")
@@ -23,21 +23,11 @@ risk_manager = RiskManager(
     config.RISK_PER_TRADE
 )
 
-
 trade_manager = TradeManager()
 
-
-risk_amount = risk_manager.calculate_risk_amount()
-
-contracts = risk_manager.calculate_position_size(
-    stop_loss_points=50,
-    point_value=config.POINT_VALUE
+simulator = TradeSimulator(
+    config.POINT_VALUE
 )
-
-
-print("Risk Amount Per Trade: $", risk_amount)
-print("Position Size:", contracts, "contracts")
-
 
 strategy = Strategy()
 
@@ -46,41 +36,60 @@ loader = DataLoader()
 historical_data = loader.load_csv("data/market_data.csv")
 
 
-backtester = Backtester(strategy)
-
-backtester.run(historical_data)
-
-
-print("\nBacktest Results:")
-
-backtester.show_results()
+contracts = risk_manager.calculate_position_size(
+    stop_loss_points=50,
+    point_value=config.POINT_VALUE
+)
 
 
-performance = Performance(backtester.results)
+trades = []
+
+
+for candle in historical_data:
+
+    decision = strategy.analyze(candle)
+
+    print(
+        "Price:",
+        candle.close,
+        "Decision:",
+        decision
+    )
+
+
+    if decision == "BUY" or decision == "SELL":
+
+        trade = trade_manager.open_trade(
+            decision,
+            candle.close,
+            candle.close - 50 if decision == "BUY" else candle.close + 50,
+            candle.close + 100 if decision == "BUY" else candle.close - 100,
+            contracts
+        )
+
+        trades.append(trade)
+
+
+
+results = []
+
+
+for trade in trades:
+
+    result = simulator.simulate(
+        trade,
+        historical_data
+    )
+
+    results.append(result)
+
+
+print("\nTrade Results:")
+
+for result in results:
+    print(result)
+
+
+performance = TradePerformance(results)
 
 performance.analyze()
-
-
-print("\nTrade Simulation:")
-
-
-trade = trade_manager.open_trade(
-    "BUY",
-    22000,
-    21950,
-    22100,
-    contracts
-)
-
-
-profit = trade.close_trade(
-    22050,
-    config.POINT_VALUE
-)
-
-
-print({
-    "entry": trade.entry_price,
-    "exit": trade.exit_price,
-    "profit": profit
-})
