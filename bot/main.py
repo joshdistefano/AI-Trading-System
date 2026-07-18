@@ -1,25 +1,23 @@
 from core.strategy import Strategy
 from core.market_data import MarketData
 from core.trade_log import TradeLog
+from core.backtester import Backtester
 
 print("AI Trading System Started")
 
-market = MarketData(22000, 1500)
-
-market.show()
-
 strategy = Strategy()
 
-decision = strategy.analyze(market)
+historical_data = [
+    MarketData(22000, 1500),
+    MarketData(22010, 1600),
+    MarketData(21990, 1400),
+    MarketData(22030, 1700)
+]
 
-print("Strategy Decision:", decision)
+backtester = Backtester(strategy)
 
-trade_memory = TradeLog()
+backtester.run(historical_data)
 
-trade_memory.add_trade({
-    "price": market.price,
-    "decision": decision
-})
+print("Backtest Results:")
 
-print("Trade Memory:")
-trade_memory.show_trades()
+backtester.show_results()
