@@ -1,9 +1,13 @@
+from core import config
 from core.strategy import Strategy
 from core.market_data import MarketData
 from core.backtester import Backtester
 from core.performance import Performance
 
 print("AI Trading System Started")
+print("Market:", config.MARKET)
+print("Timeframe:", config.TIMEFRAME)
+print("Risk:", config.RISK_PER_TRADE * 100, "%")
 
 strategy = Strategy()
 
@@ -18,7 +22,7 @@ backtester = Backtester(strategy)
 
 backtester.run(historical_data)
 
-print("Backtest Results:")
+print("\nBacktest Results:")
 
 backtester.show_results()
 
