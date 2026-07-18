@@ -10,6 +10,7 @@ from risk.risk_manager import RiskManager
 from trading.trade_manager import TradeManager
 from trading.trade_simulator import TradeSimulator
 from trading.trade_performance import TradePerformance
+from trading.trade_journal import TradeJournal
 
 
 print("AI Trading System Started")
@@ -28,6 +29,8 @@ trade_manager = TradeManager()
 simulator = TradeSimulator(
     config.POINT_VALUE
 )
+
+journal = TradeJournal()
 
 strategy = Strategy()
 
@@ -82,6 +85,9 @@ for trade in trades:
     )
 
     results.append(result)
+
+    journal.save_trade(result)
+
 
 
 print("\nTrade Results:")
