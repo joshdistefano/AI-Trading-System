@@ -1,25 +1,30 @@
+from indicators.ema import calculate_ema
+from indicators.vwap import calculate_vwap
+
+
 class Strategy:
+
     def __init__(self):
-        self.name = "Momentum Strategy"
-        self.previous_close = None
+        self.name = "EMA VWAP Momentum Strategy"
+        self.prices = []
+        self.volumes = []
 
     def analyze(self, market_data):
 
-        current_close = market_data.close
+        self.prices.append(market_data.close)
+        self.volumes.append(market_data.volume)
 
-        if self.previous_close is None:
-            self.previous_close = current_close
+        if len(self.prices) < 3:
             return "NO TRADE"
 
-        if current_close > self.previous_close:
-            decision = "BUY"
+        ema = calculate_ema(self.prices, 3)
+        vwap = calculate_vwap(self.prices, self.volumes)
 
-        elif current_close < self.previous_close:
-            decision = "SELL"
+        if market_data.close > ema and market_data.close > vwap:
+            return "BUY"
+
+        elif market_data.close < ema and market_data.close < vwap:
+            return "SELL"
 
         else:
-            decision = "NO TRADE"
-
-        self.previous_close = current_close
-
-        return decision
+            return "NO TRADE"
