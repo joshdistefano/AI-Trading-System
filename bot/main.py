@@ -1,7 +1,7 @@
 from core.strategy import Strategy
 from core.market_data import MarketData
-from core.trade_log import TradeLog
 from core.backtester import Backtester
+from core.performance import Performance
 
 print("AI Trading System Started")
 
@@ -21,3 +21,7 @@ backtester.run(historical_data)
 print("Backtest Results:")
 
 backtester.show_results()
+
+performance = Performance(backtester.results)
+
+performance.analyze()
