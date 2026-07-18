@@ -1,8 +1,8 @@
 from core import config
 from core.strategy import Strategy
-from core.market_data import MarketData
 from core.backtester import Backtester
 from core.performance import Performance
+from core.data_loader import DataLoader
 
 print("AI Trading System Started")
 print("Market:", config.MARKET)
@@ -11,12 +11,9 @@ print("Risk:", config.RISK_PER_TRADE * 100, "%")
 
 strategy = Strategy()
 
-historical_data = [
-    MarketData(22000, 1500),
-    MarketData(22010, 1600),
-    MarketData(21990, 1400),
-    MarketData(22030, 1700)
-]
+loader = DataLoader()
+
+historical_data = loader.load_csv("market_data.csv")
 
 backtester = Backtester(strategy)
 
